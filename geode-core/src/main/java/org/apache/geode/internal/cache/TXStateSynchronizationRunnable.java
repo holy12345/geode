@@ -17,22 +17,20 @@ package org.apache.geode.internal.cache;
 import org.apache.logging.log4j.Logger;
 
 import org.apache.geode.CancelCriterion;
-import org.apache.geode.internal.cache.tier.sockets.CommBufferPool;
 import org.apache.geode.internal.logging.LogService;
 
 /**
- * TXSynchronizationThread manages beforeCompletion and afterCompletion calls on behalf of a client
- * cache. The thread should be instantiated with a Runnable that invokes beforeCompletion behavior.
+ * TXSynchronizationThread manages beforeCompletion and afterCompletion calls in TXState.
+ * The thread should be instantiated with a Runnable that invokes beforeCompletion behavior.
  * Then you must invoke runSecondRunnable() with another Runnable that invokes afterCompletion
  * behavior.
  *
- * @since GemFire 6.6
+ * @since Geode 1.8.0
  */
-public class TXSynchronizationRunnable implements Runnable {
+public class TXStateSynchronizationRunnable implements Runnable {
   private static final Logger logger = LogService.getLogger();
 
   private final CancelCriterion cancelCriterion;
-  private final CommBufferPool commBufferPool;
 
   private Runnable firstRunnable;
   private final Object firstRunnableSync = new Object();
@@ -44,21 +42,15 @@ public class TXSynchronizationRunnable implements Runnable {
 
   private boolean abort;
 
-  public TXSynchronizationRunnable(final CancelCriterion cancelCriterion,
-      final CommBufferPool commBufferPool, final Runnable beforeCompletion) {
+  public TXStateSynchronizationRunnable(final CancelCriterion cancelCriterion,
+      final Runnable beforeCompletion) {
     this.cancelCriterion = cancelCriterion;
-    this.commBufferPool = commBufferPool;
     this.firstRunnable = beforeCompletion;
   }
 
   @Override
   public void run() {
-    commBufferPool.setTLCommBuffer();
-    try {
-      doSynchronizationOps();
-    } finally {
-      commBufferPool.releaseTLCommBuffer();
-    }
+    doSynchronizationOps();
   }
 
   private void doSynchronizationOps() {
