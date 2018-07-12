@@ -891,7 +891,7 @@ public class GemFireCacheImpl implements InternalCache, InternalClientCache, Has
       this.cqService = CqServiceProvider.create(this);
 
       // Create the CacheStatistics
-      this.cachePerfStats = new CachePerfStats(system);
+      this.cachePerfStats = new CachePerfStats(system.getStatisticsFactory());
       CachePerfStats.enableClockStats = this.system.getConfig().getEnableTimeStatistics();
 
       this.transactionManager = new TXManagerImpl(this.cachePerfStats, this);

@@ -99,9 +99,9 @@ public class AutoConnectionSourceImplJUnitTest {
     props.setProperty(MCAST_PORT, "0");
     props.setProperty(LOCATORS, "");
 
-    DistributedSystem ds = DistributedSystem.connect(props);
-    cache = CacheFactory.create(ds);
-    poolStats = new PoolStats(ds, "pool");
+    DistributedSystem distributedSystem = DistributedSystem.connect(props);
+    cache = CacheFactory.create(distributedSystem);
+    poolStats = new PoolStats(distributedSystem.getStatisticsFactory(), "pool");
     port = AvailablePortHelper.getRandomAvailableTCPPort();
 
     handler = new FakeHandler();

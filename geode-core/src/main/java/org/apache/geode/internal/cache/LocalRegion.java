@@ -66,7 +66,7 @@ import org.apache.geode.DeltaSerializationException;
 import org.apache.geode.InternalGemFireError;
 import org.apache.geode.InternalGemFireException;
 import org.apache.geode.LogWriter;
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 import org.apache.geode.SystemFailure;
 import org.apache.geode.admin.internal.SystemMemberCacheEventProcessor;
 import org.apache.geode.cache.AttributesMutator;
@@ -7654,7 +7654,7 @@ public class LocalRegion extends AbstractRegion implements LoaderHelperFactory,
     if (this instanceof BucketRegion) {
       stats = internalRegionArgs.getPartitionedRegion().getDiskRegionStats();
     } else {
-      stats = new DiskRegionStats(getCache().getDistributedSystem(), getFullPath());
+      stats = new DiskRegionStats(getCache().getDistributedSystem().getStatisticsFactory(), getFullPath());
     }
 
     EnumSet<DiskRegionFlag> diskFlags = EnumSet.noneOf(DiskRegionFlag.class);
@@ -10983,7 +10983,7 @@ public class LocalRegion extends AbstractRegion implements LoaderHelperFactory,
     CachePerfStats cachePerfStats;
 
     RegionPerfStats(InternalCache cache, CachePerfStats superStats, String regionName) {
-      super(cache.getDistributedSystem(), regionName);
+      super(cache.getDistributedSystem().getStatisticsFactory(), regionName);
       this.cachePerfStats = superStats;
     }
 

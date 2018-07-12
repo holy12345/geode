@@ -14,7 +14,7 @@
  */
 package org.apache.geode.internal.offheap;
 
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 
 /**
  * Null implementation of OffHeapMemoryStats for testing.

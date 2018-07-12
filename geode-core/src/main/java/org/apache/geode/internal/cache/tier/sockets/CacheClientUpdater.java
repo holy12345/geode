@@ -37,10 +37,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.geode.CancelException;
 import org.apache.geode.DataSerializer;
 import org.apache.geode.InvalidDeltaException;
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
+import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.cache.EntryNotFoundException;
 import org.apache.geode.cache.InterestResultPolicy;
 import org.apache.geode.cache.Operation;
@@ -1869,9 +1869,9 @@ public class CacheClientUpdater extends Thread implements ClientUpdater, Disconn
     // instance fields
     private final Statistics stats;
 
-    CCUStats(DistributedSystem ids, ServerLocation location) {
+    CCUStats(DistributedSystem distributedSystem, ServerLocation location) {
       // no need for atomic since only a single thread will be writing these
-      this.stats = ids.createStatistics(type, "CacheClientUpdater-" + location);
+      this.stats = distributedSystem.getStatisticsFactory().createStatistics(type, "CacheClientUpdater-" + location);
     }
 
     public void close() {

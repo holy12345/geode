@@ -14,7 +14,7 @@
  */
 package org.apache.geode.internal.offheap;
 
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 
 /**
  * Statistics for off-heap memory storage.

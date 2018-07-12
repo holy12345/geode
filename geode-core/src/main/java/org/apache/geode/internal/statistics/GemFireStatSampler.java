@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.Logger;
 
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
 import org.apache.geode.distributed.internal.membership.InternalDistributedMember;
 import org.apache.geode.internal.GemFireVersion;
@@ -44,7 +44,6 @@ import org.apache.geode.internal.statistics.platform.ProcessStats;
  * GemFireStatSampler adds listeners and rolling archives to HostStatSampler.
  * <p>
  * The StatisticsManager is implemented by DistributedSystem.
- *
  */
 public class GemFireStatSampler extends HostStatSampler {
 
@@ -60,22 +59,23 @@ public class GemFireStatSampler extends HostStatSampler {
   private final Map<InternalDistributedMember, List<RemoteStatListenerImpl>> recipientToListeners =
       new HashMap<InternalDistributedMember, List<RemoteStatListenerImpl>>();
 
-  private final InternalDistributedSystem con;
+  private final InternalDistributedSystem internalDistributedSystem;
 
   private int nextListenerId = 1;
   private ProcessStats processStats = null;
 
   ////////////////////// Constructors //////////////////////
 
-  public GemFireStatSampler(InternalDistributedSystem con) {
-    super(con.getCancelCriterion(), new StatSamplerStats(con, con.getId()));
-    this.con = con;
+  public GemFireStatSampler(InternalDistributedSystem internalDistributedSystem) {
+    super(internalDistributedSystem.getCancelCriterion(),
+        new StatSamplerStats(internalDistributedSystem.getInternalDistributedSystemStats(),
+            internalDistributedSystem.getId()));
+    this.internalDistributedSystem = internalDistributedSystem;
   }
 
   /**
    * Returns the <code>ProcessStats</code> for this Java VM. Note that <code>null</code> will be
    * returned if operating statistics are disabled.
-   *
    * @since GemFire 3.5
    */
   public ProcessStats getProcessStats() {
@@ -158,16 +158,17 @@ public class GemFireStatSampler extends HostStatSampler {
 
   @Override
   public File getArchiveFileName() {
-    return this.con.getConfig().getStatisticArchiveFile();
+    return this.internalDistributedSystem.getConfig().getStatisticArchiveFile();
   }
 
   @Override
   public long getArchiveFileSizeLimit() {
     if (fileSizeLimitInKB()) {
       // use KB instead of MB to speed up rolling for testing
-      return ((long) this.con.getConfig().getArchiveFileSizeLimit()) * (1024);
+      return ((long) this.internalDistributedSystem.getConfig().getArchiveFileSizeLimit()) * (1024);
     } else {
-      return ((long) this.con.getConfig().getArchiveFileSizeLimit()) * (1024 * 1024);
+      return ((long) this.internalDistributedSystem.getConfig().getArchiveFileSizeLimit()) * (1024
+          * 1024);
     }
   }
 
@@ -175,9 +176,11 @@ public class GemFireStatSampler extends HostStatSampler {
   public long getArchiveDiskSpaceLimit() {
     if (fileSizeLimitInKB()) {
       // use KB instead of MB to speed up removal for testing
-      return ((long) this.con.getConfig().getArchiveDiskSpaceLimit()) * (1024);
+      return ((long) this.internalDistributedSystem.getConfig().getArchiveDiskSpaceLimit())
+          * (1024);
     } else {
-      return ((long) this.con.getConfig().getArchiveDiskSpaceLimit()) * (1024 * 1024);
+      return ((long) this.internalDistributedSystem.getConfig().getArchiveDiskSpaceLimit()) * (1024
+          * 1024);
     }
   }
 
@@ -192,8 +195,9 @@ public class GemFireStatSampler extends HostStatSampler {
       Iterator<Map.Entry<InternalDistributedMember, List<RemoteStatListenerImpl>>> it1 =
           recipientToListeners.entrySet().iterator();
       while (it1.hasNext()) {
-        if (stopRequested())
+        if (stopRequested()) {
           return;
+        }
         Map.Entry<InternalDistributedMember, List<RemoteStatListenerImpl>> me = it1.next();
         List<RemoteStatListenerImpl> l = me.getValue();
         if (l.size() > 0) {
@@ -209,7 +213,7 @@ public class GemFireStatSampler extends HostStatSampler {
               msg.addChange(-statListener.getListenerId(), 0);
             }
           }
-          this.con.getDistributionManager().putOutgoing(msg);
+          this.internalDistributedSystem.getDistributionManager().putOutgoing(msg);
         }
       }
     }
@@ -217,22 +221,22 @@ public class GemFireStatSampler extends HostStatSampler {
 
   @Override
   protected int getSampleRate() {
-    return this.con.getConfig().getStatisticSampleRate();
+    return this.internalDistributedSystem.getConfig().getStatisticSampleRate();
   }
 
   @Override
   public boolean isSamplingEnabled() {
-    return this.con.getConfig().getStatisticSamplingEnabled();
+    return this.internalDistributedSystem.getConfig().getStatisticSamplingEnabled();
   }
 
   @Override
   protected StatisticsManager getStatisticsManager() {
-    return this.con;
+    return this.internalDistributedSystem.getInternalDistributedSystemStats();
   }
 
   @Override
   protected OsStatisticsFactory getOsStatisticsFactory() {
-    return this.con;
+    return this.internalDistributedSystem.getInternalDistributedSystemStats();
   }
 
   @Override
@@ -277,13 +281,15 @@ public class GemFireStatSampler extends HostStatSampler {
     if (l == null) {
       return;
     }
-    if (stopRequested())
+    if (stopRequested()) {
       return;
+    }
     HostStatHelper.readyRefreshOSStats();
     Iterator<Statistics> it = l.iterator();
     while (it.hasNext()) {
-      if (stopRequested())
+      if (stopRequested()) {
         return;
+      }
       StatisticsImpl s = (StatisticsImpl) it.next();
       if (s.usesSystemCalls()) {
         HostStatHelper.refresh((LocalStatisticsImpl) s);
@@ -440,7 +446,8 @@ public class GemFireStatSampler extends HostStatSampler {
     }
 
     static RemoteStatListenerImpl create(int listenerId, InternalDistributedMember recipient,
-        long resourceId, String statName, HostStatSampler sampler) {
+                                         long resourceId, String statName,
+                                         HostStatSampler sampler) {
       RemoteStatListenerImpl result = null;
       Statistics stats = sampler.getStatisticsManager().findStatistics(resourceId);
       StatisticDescriptorImpl stat = (StatisticDescriptorImpl) stats.nameToDescriptor(statName);

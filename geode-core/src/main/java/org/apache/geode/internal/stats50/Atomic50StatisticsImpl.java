@@ -20,8 +20,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicLongArray;
 
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.internal.OSProcess;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.statistics.StatisticsImpl;

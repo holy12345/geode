@@ -50,7 +50,7 @@ import org.apache.geode.CancelCriterion;
 import org.apache.geode.CancelException;
 import org.apache.geode.InternalGemFireError;
 import org.apache.geode.InternalGemFireException;
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.SystemFailure;
 import org.apache.geode.cache.AttributesFactory;
 import org.apache.geode.cache.CacheException;
@@ -369,7 +369,7 @@ public class HARegionQueue implements RegionQueue {
     String processedRegionName = createRegionName(regionName);
 
     // Initialize the statistics
-    StatisticsFactory factory = cache.getDistributedSystem();
+    StatisticsFactory factory = cache.getDistributedSystem().getStatisticsFactory();
     createHARegion(processedRegionName, cache);
 
     initializeHARegionQueue(processedRegionName, this.region, haContainer, clientProxyId,

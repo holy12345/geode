@@ -41,8 +41,9 @@ import javax.management.ObjectName;
 
 import org.apache.logging.log4j.Logger;
 
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.internal.statistics.InternalDistributedSystemStats;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.cache.DiskStore;
 import org.apache.geode.cache.Region;
 import org.apache.geode.cache.execute.FunctionService;
@@ -421,7 +422,9 @@ public class MemberMBeanBridge {
   public MemberMBeanBridge init() {
     CachePerfStats cachePerfStats = this.cache.getCachePerfStats();
     addCacheStats(cachePerfStats);
-    addFunctionStats(system.getFunctionServiceStats());
+    InternalDistributedSystemStats internalDistributedSystemStats =
+        system.getInternalDistributedSystemStats();
+    addFunctionStats(internalDistributedSystemStats.getFunctionServiceStats());
 
     if (system.getDistributionManager().getStats() instanceof DistributionStats) {
       DistributionStats distributionStats =
@@ -433,13 +436,13 @@ public class MemberMBeanBridge {
       Statistics[] systemStats = null;
 
       if (HostStatHelper.isSolaris()) {
-        systemStats = system.findStatisticsByType(SolarisSystemStats.getType());
+        systemStats = internalDistributedSystemStats.findStatisticsByType(SolarisSystemStats.getType());
       } else if (HostStatHelper.isLinux()) {
-        systemStats = system.findStatisticsByType(LinuxSystemStats.getType());
+        systemStats = internalDistributedSystemStats.findStatisticsByType(LinuxSystemStats.getType());
       } else if (HostStatHelper.isOSX()) {
         systemStats = null;// @TODO once OSX stats are implemented
       } else if (HostStatHelper.isWindows()) {
-        systemStats = system.findStatisticsByType(WindowsSystemStats.getType());
+        systemStats = internalDistributedSystemStats.findStatisticsByType(WindowsSystemStats.getType());
       }
 
       if (systemStats != null) {
@@ -574,6 +577,8 @@ public class MemberMBeanBridge {
 
   public void addSystemStats() {
     GemFireStatSampler sampler = system.getStatSampler();
+    InternalDistributedSystemStats internalDistributedSystemStats =
+        system.getInternalDistributedSystemStats();
 
     ProcessStats processStats = sampler.getProcessStats();
 
@@ -588,7 +593,8 @@ public class MemberMBeanBridge {
 
   public void addVMStats() {
     VMStatsContract vmStatsContract = system.getStatSampler().getVMStats();
-
+    InternalDistributedSystemStats internalDistributedSystemStats =
+        system.getInternalDistributedSystemStats();
     if (vmStatsContract != null && vmStatsContract instanceof VMStats50) {
       VMStats50 vmStats50 = (VMStats50) vmStatsContract;
       Statistics vmStats = vmStats50.getVMStats();
@@ -603,7 +609,7 @@ public class MemberMBeanBridge {
 
       StatisticsType gcType = VMStats50.getGCType();
       if (gcType != null) {
-        Statistics[] gcStats = system.findStatisticsByType(gcType);
+        Statistics[] gcStats = internalDistributedSystemStats.findStatisticsByType(gcType);
         if (gcStats != null && gcStats.length > 0) {
           for (Statistics gcStat : gcStats) {
             if (gcStat != null) {

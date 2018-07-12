@@ -14,8 +14,8 @@
  */
 package org.apache.geode.internal.cache.wan;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.distributed.internal.DistributionStats;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
 import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
@@ -95,31 +95,31 @@ public class GatewayReceiverStats extends CacheServerStats {
   // ///////////////////// Constructors ///////////////////////
 
   public static GatewayReceiverStats createGatewayReceiverStats(String ownerName) {
-    StatisticsFactory f = InternalDistributedSystem.getAnyInstance();
+    StatisticsFactory statisticsFactory = InternalDistributedSystem.getAnyInstance().getStatisticsFactory();
     StatisticDescriptor[] descriptors = new StatisticDescriptor[] {
-        f.createIntCounter(DUPLICATE_BATCHES_RECEIVED,
+        statisticsFactory.createIntCounter(DUPLICATE_BATCHES_RECEIVED,
             "number of batches which have already been seen by this GatewayReceiver",
             "nanoseconds"),
-        f.createIntCounter(OUT_OF_ORDER_BATCHES_RECEIVED,
+        statisticsFactory.createIntCounter(OUT_OF_ORDER_BATCHES_RECEIVED,
             "number of batches which are out of order on this GatewayReceiver", "operations"),
-        f.createIntCounter(EARLY_ACKS, "number of early acknowledgements sent to gatewaySenders",
+        statisticsFactory.createIntCounter(EARLY_ACKS, "number of early acknowledgements sent to gatewaySenders",
             "operations"),
-        f.createIntCounter(EVENTS_RECEIVED,
+        statisticsFactory.createIntCounter(EVENTS_RECEIVED,
             "total number events across the batched received by this GatewayReceiver",
             "operations"),
-        f.createIntCounter(CREAT_REQUESTS,
+        statisticsFactory.createIntCounter(CREAT_REQUESTS,
             "total number of create operations received by this GatewayReceiver", "operations"),
-        f.createIntCounter(UPDATE_REQUESTS,
+        statisticsFactory.createIntCounter(UPDATE_REQUESTS,
             "total number of update operations received by this GatewayReceiver", "operations"),
-        f.createIntCounter(DESTROY_REQUESTS,
+        statisticsFactory.createIntCounter(DESTROY_REQUESTS,
             "total number of destroy operations received by this GatewayReceiver", "operations"),
-        f.createIntCounter(UNKNOWN_OPERATIONS_RECEIVED,
+        statisticsFactory.createIntCounter(UNKNOWN_OPERATIONS_RECEIVED,
             "total number of unknown operations received by this GatewayReceiver", "operations"),
-        f.createIntCounter(EXCEPTIONS_OCCURRED,
+        statisticsFactory.createIntCounter(EXCEPTIONS_OCCURRED,
             "number of exceptions occurred while porcessing the batches", "operations"),
-        f.createIntCounter(EVENTS_RETRIED,
+        statisticsFactory.createIntCounter(EVENTS_RETRIED,
             "total number events retried by this GatewayReceiver due to exceptions", "operations")};
-    return new GatewayReceiverStats(f, ownerName, typeName, descriptors);
+    return new GatewayReceiverStats(statisticsFactory, ownerName, typeName, descriptors);
 
   }
 

@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.logging.log4j.Logger;
 
 import org.apache.geode.InvalidDeltaException;
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.SystemFailure;
 import org.apache.geode.cache.Cache;
 import org.apache.geode.cache.CacheEvent;
@@ -165,7 +165,7 @@ public class CqServiceImpl implements CqService {
     this.matchingCqMap = new ConcurrentHashMap<String, HashSet<String>>();
 
     // Initialize the VSD statistics
-    StatisticsFactory factory = this.cache.getDistributedSystem();
+    StatisticsFactory factory = this.cache.getDistributedSystem().getStatisticsFactory();
     this.stats = new CqServiceVsdStats(factory);
     this.cqServiceStats = new CqServiceStatisticsImpl(this);
   }

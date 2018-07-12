@@ -49,9 +49,9 @@ public class RegionStatsJUnitTest extends MBeanStatsTestCase {
   private DiskRegionStats diskRegionStats;
 
   protected void init() {
-    cachePerfStats = new CachePerfStats(system);
-    partitionedRegionStats = new PartitionedRegionStats(system, "/tests");
-    diskRegionStats = new DiskRegionStats(system, "test-disk");
+    cachePerfStats = new CachePerfStats(system.getStatisticsFactory());
+    partitionedRegionStats = new PartitionedRegionStats(system.getStatisticsFactory(), "/tests");
+    diskRegionStats = new DiskRegionStats(system.getStatisticsFactory(), "test-disk");
 
     bridge = new RegionMBeanBridge(cachePerfStats);
     parBridge = new PartitionedRegionBridge(partitionedRegionStats);

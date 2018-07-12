@@ -48,7 +48,7 @@ import org.apache.geode.CancelException;
 import org.apache.geode.DataSerializer;
 import org.apache.geode.Instantiator;
 import org.apache.geode.InternalGemFireError;
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.cache.CacheEvent;
 import org.apache.geode.cache.CacheException;
 import org.apache.geode.cache.InterestRegistrationEvent;
@@ -1916,7 +1916,7 @@ public class CacheClientNotifier {
     if (isGatewayReceiver) {
       factory = new DummyStatisticsFactory();
     } else {
-      factory = this.getCache().getDistributedSystem();
+      factory = this.getCache().getDistributedSystem().getStatisticsFactory();
     }
     this.statistics = new CacheClientNotifierStats(factory);
 

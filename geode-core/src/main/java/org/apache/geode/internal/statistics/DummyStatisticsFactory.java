@@ -18,10 +18,10 @@ package org.apache.geode.internal.statistics;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsFactory;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
 
 /**
  * A StatisticsFactory that creates disconnected statistics

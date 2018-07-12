@@ -144,7 +144,7 @@ public class GMSHealthMonitorJUnitTest {
     when(services.getJoinLeave()).thenReturn(joinLeave);
     when(services.getCancelCriterion()).thenReturn(stopper);
     when(services.getManager()).thenReturn(manager);
-    when(services.getStatistics()).thenReturn(new DistributionStats(system, statsId));
+    when(services.getStatistics()).thenReturn(new DistributionStats(system.getStatisticsFactory(), statsId));
     when(stopper.isCancelInProgress()).thenReturn(false);
 
     if (mockMembers == null) {

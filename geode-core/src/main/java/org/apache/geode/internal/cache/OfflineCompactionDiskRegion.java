@@ -27,7 +27,7 @@ import org.apache.geode.internal.cache.persistence.DiskRegionView;
 public class OfflineCompactionDiskRegion extends DiskRegion implements DiskRecoveryStore {
   private OfflineCompactionDiskRegion(DiskStoreImpl ds, DiskRegionView drv) {
     super(ds, drv.getName(), drv.isBucket(), true, false, true,
-        new DiskRegionStats(ds.getCache().getDistributedSystem(), drv.getName()),
+        new DiskRegionStats(ds.getCache().getDistributedSystem().getStatisticsFactory(), drv.getName()),
         new DummyCancelCriterion(), new DummyDiskExceptionHandler(), null, drv.getFlags(),
         drv.getPartitionName(), drv.getStartingBucketId(), drv.getCompressorClassName(),
         drv.getOffHeap());

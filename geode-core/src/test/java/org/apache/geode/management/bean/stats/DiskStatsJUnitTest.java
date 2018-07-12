@@ -37,7 +37,7 @@ public class DiskStatsJUnitTest extends MBeanStatsTestCase {
   private static long testStartTime = NanoTimer.getTime();
 
   public void init() {
-    diskStoreStats = new DiskStoreStats(system, "test");
+    diskStoreStats = new DiskStoreStats(system.getStatisticsFactory(), "test");
 
     bridge = new DiskStoreMBeanBridge();
     bridge.addDiskStoreStats(diskStoreStats);

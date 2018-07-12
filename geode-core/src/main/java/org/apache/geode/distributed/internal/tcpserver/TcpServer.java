@@ -524,7 +524,7 @@ public class TcpServer {
     try {
       ClientProtocolService clientProtocolService = clientProtocolServiceLoader.lookupService();
       clientProtocolService.initializeStatistics("LocatorStats",
-          internalLocator.getDistributedSystem());
+          internalLocator.getDistributedSystem().getStatisticsFactory());
       try (ClientProtocolProcessor pipeline = clientProtocolService.createProcessorForLocator(
           internalLocator, internalLocator.getCache().getSecurityService())) {
         while (!pipeline.socketProcessingIsFinished()) {

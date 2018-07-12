@@ -266,7 +266,7 @@ public abstract class AbstractGatewaySender implements GatewaySender, Distributi
       this.stopper = new Stopper(cache.getCancelCriterion());
       this.senderAdvisor = GatewaySenderAdvisor.createGatewaySenderAdvisor(this);
       if (!this.isForInternalUse()) {
-        this.statistics = new GatewaySenderStats(cache.getDistributedSystem(), id);
+        this.statistics = new GatewaySenderStats(cache.getDistributedSystem().getStatisticsFactory(), id);
       }
       initializeEventIdIndex();
     }
@@ -1205,7 +1205,7 @@ public abstract class AbstractGatewaySender implements GatewaySender, Distributi
       // Create a stats holder for the meta data stats
       final HasCachePerfStats statsHolder = new HasCachePerfStats() {
         public CachePerfStats getCachePerfStats() {
-          return new CachePerfStats(cache.getDistributedSystem(), META_DATA_REGION_NAME);
+          return new CachePerfStats(cache.getDistributedSystem().getStatisticsFactory(), META_DATA_REGION_NAME);
         }
       };
 

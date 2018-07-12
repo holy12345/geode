@@ -53,7 +53,7 @@ import org.apache.logging.log4j.Logger;
 
 import org.apache.geode.CancelException;
 import org.apache.geode.InternalGemFireException;
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.SystemFailure;
 import org.apache.geode.cache.AttributesFactory;
 import org.apache.geode.cache.AttributesMutator;
@@ -740,7 +740,7 @@ public class PartitionedRegion extends LocalRegion
     super(regionName, regionAttributes, parentRegion, cache, internalRegionArgs);
 
     this.node = initializeNode();
-    this.prStats = new PartitionedRegionStats(cache.getDistributedSystem(), getFullPath());
+    this.prStats = new PartitionedRegionStats(cache.getDistributedSystem().getStatisticsFactory(), getFullPath());
     this.regionIdentifier = getFullPath().replace('/', '#');
 
     if (logger.isDebugEnabled()) {
@@ -831,7 +831,7 @@ public class PartitionedRegion extends LocalRegion
         && !this.getEvictionAttributes().getAlgorithm().isNone()
         && this.getEvictionAttributes().getAction().isOverflowToDisk())
         || this.getDataPolicy().withPersistence()) {
-      StatisticsFactory sf = this.getCache().getDistributedSystem();
+      StatisticsFactory sf = this.getCache().getDistributedSystem().getStatisticsFactory();
       this.diskRegionStats = new DiskRegionStats(sf, getFullPath());
     } else {
       this.diskRegionStats = null;

@@ -1267,7 +1267,7 @@ public class InternalLocator extends Locator implements ConnectListener {
   @Override
   public void onConnect(InternalDistributedSystem sys) {
     try {
-      this.stats.hookupStats(sys,
+      this.stats.hookupStats(sys.getStatisticsFactory(),
           SocketCreator.getLocalHost().getCanonicalHostName() + '-' + this.server.getBindAddress());
     } catch (UnknownHostException e) {
       logger.warn(e);

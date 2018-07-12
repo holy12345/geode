@@ -14,7 +14,7 @@
  */
 package org.apache.geode.internal.cache;
 
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 import org.apache.geode.distributed.internal.PoolStatHelper;
 
 /**

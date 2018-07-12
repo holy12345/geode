@@ -14,11 +14,11 @@
  */
 package org.apache.geode.internal.cache.execute;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsFactory;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
+import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.distributed.internal.DistributionConfig;
 import org.apache.geode.distributed.internal.DistributionStats;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
@@ -229,7 +229,7 @@ public class FunctionStats {
    */
   public FunctionStats(StatisticsFactory factory, String name) {
     this._stats = factory.createAtomicStatistics(_type, name);
-    aggregateStats = ((InternalDistributedSystem) factory).getFunctionServiceStats();
+    aggregateStats = ((InternalDistributedSystem) factory).getInternalDistributedSystemStats().getFunctionServiceStats();
   }
 
   /**
@@ -462,14 +462,14 @@ public class FunctionStats {
    * Returns the Function Stats for the given function
    *
    * @param functionID represents the function for which we are returning the function Stats
-   * @param ds represents the Distributed System
+   * @param distributedSystem represents the Distributed System
    * @return object of the FunctionStats
    */
-  public static FunctionStats getFunctionStats(String functionID, InternalDistributedSystem ds) {
+  public static FunctionStats getFunctionStats(String functionID, InternalDistributedSystem distributedSystem) {
     if (isDisabled()) {
       return dummy;
     } else {
-      return ds.getFunctionStats(functionID);
+      return distributedSystem.getInternalDistributedSystemStats().getFunctionStats(functionID);
     }
   }
 
@@ -477,8 +477,8 @@ public class FunctionStats {
     if (isDisabled()) {
       return dummy;
     } else {
-      InternalDistributedSystem ds = InternalDistributedSystem.getAnyInstance();
-      return ds.getFunctionStats(functionID);
+      InternalDistributedSystem distributedSystem = InternalDistributedSystem.getAnyInstance();
+      return distributedSystem.getInternalDistributedSystemStats().getFunctionStats(functionID);
     }
   }
 

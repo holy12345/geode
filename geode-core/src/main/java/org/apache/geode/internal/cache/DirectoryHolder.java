@@ -17,7 +17,7 @@ package org.apache.geode.internal.cache;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 
 /**
  * A holder for a disk Directory. Used for maintaining the available space and updating disk

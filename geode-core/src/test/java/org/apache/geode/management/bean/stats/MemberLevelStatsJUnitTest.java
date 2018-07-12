@@ -66,12 +66,12 @@ public class MemberLevelStatsJUnitTest extends MBeanStatsTestCase {
   private static long testStartTime = NanoTimer.getTime();
 
   public void init() {
-    cachePerfStats = new CachePerfStats(system);
-    funcServiceStats = new FunctionServiceStats(system, "FunctionExecution");
+    cachePerfStats = new CachePerfStats(system.getStatisticsFactory());
+    funcServiceStats = new FunctionServiceStats(system.getStatisticsFactory(), "FunctionExecution");
     long statId = OSProcess.getId();
-    distributionStats = new DistributionStats(system, statId);
+    distributionStats = new DistributionStats(system.getStatisticsFactory(), statId);
     DistributionStats.enableClockStats = true;
-    dlockStats = new DLockStats(system, statId);
+    dlockStats = new DLockStats(system.getStatisticsFactory(), statId);
 
     bridge = new MemberMBeanBridge();
     bridge.addCacheStats(cachePerfStats);
@@ -87,13 +87,13 @@ public class MemberLevelStatsJUnitTest extends MBeanStatsTestCase {
     bridge.addVMStats();
 
     for (int i = 0; i < 4; i++) {
-      DiskStoreStats stats = new DiskStoreStats(system, name.getMethodName() + i);
+      DiskStoreStats stats = new DiskStoreStats(system.getStatisticsFactory(), name.getMethodName() + i);
       diskStatsList.add(stats);
       bridge.addDiskStoreStats(stats);
     }
 
     for (int i = 0; i < 4; i++) {
-      PartitionedRegionStats stats = new PartitionedRegionStats(system, name.getMethodName() + i);
+      PartitionedRegionStats stats = new PartitionedRegionStats(system.getStatisticsFactory(), name.getMethodName() + i);
       parRegionStatsList.add(stats);
       bridge.addPartionRegionStats(stats);
     }

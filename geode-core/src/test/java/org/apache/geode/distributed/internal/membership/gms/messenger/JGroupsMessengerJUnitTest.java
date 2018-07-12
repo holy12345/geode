@@ -167,7 +167,7 @@ public class JGroupsMessengerJUnitTest {
     DistributionManager dm = mock(DistributionManager.class);
     InternalDistributedSystem system =
         InternalDistributedSystem.newInstanceForTesting(dm, nonDefault);
-    when(services.getStatistics()).thenReturn(new DistributionStats(system, statsId));
+    when(services.getStatistics()).thenReturn(new DistributionStats(system.getStatisticsFactory(), statsId));
 
     messenger = new JGroupsMessenger();
     messenger.init(services);

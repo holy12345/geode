@@ -14,11 +14,11 @@
  */
 package org.apache.geode.modules.util;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsFactory;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
+import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.distributed.DistributedSystem;
 import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 
@@ -64,7 +64,7 @@ public class ModuleStatistics {
   public static ModuleStatistics getInstance(DistributedSystem system) {
     synchronized (ModuleStatistics.class) {
       if (instance == null) {
-        instance = new ModuleStatistics(system);
+        instance = new ModuleStatistics(system.getStatisticsFactory());
       }
     }
     return instance;

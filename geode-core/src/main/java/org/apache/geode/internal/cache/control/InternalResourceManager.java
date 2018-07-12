@@ -112,7 +112,7 @@ public class InternalResourceManager implements ResourceManager {
   private InternalResourceManager(InternalCache cache) {
     this.cache = cache;
     this.resourceAdvisor = (ResourceAdvisor) cache.getDistributionAdvisor();
-    this.stats = new ResourceManagerStats(cache.getDistributedSystem());
+    this.stats = new ResourceManagerStats(cache.getDistributedSystem().getStatisticsFactory());
 
     // Create a new executor that other classes may use for handling resource
     // related tasks

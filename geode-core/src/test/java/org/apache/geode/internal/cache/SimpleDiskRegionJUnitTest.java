@@ -31,7 +31,7 @@ import java.util.Set;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.test.dunit.ThreadUtils;
 import org.apache.geode.test.junit.categories.IntegrationTest;
 
@@ -243,7 +243,7 @@ public class SimpleDiskRegionJUnitTest extends DiskRegionTestingBase {
     Oplog oplog = dr.testHook_getChild();
     long id = oplog.getOplogId();
 
-    StatisticsFactory factory = region.getCache().getDistributedSystem();
+    StatisticsFactory factory = region.getCache().getDistributedSystem().getStatisticsFactory();
     Oplog newOplog =
         new Oplog(id, dr.getOplogSet(), new DirectoryHolder(factory, dirs[0], 1000000, 0));
     dr.getDiskStore().getPersistentOplogs().setChild(newOplog);

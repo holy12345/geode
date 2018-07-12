@@ -72,7 +72,7 @@ import org.apache.logging.log4j.Logger;
 
 import org.apache.geode.CancelCriterion;
 import org.apache.geode.CancelException;
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.SystemFailure;
 import org.apache.geode.cache.Cache;
 import org.apache.geode.cache.CacheClosedException;
@@ -418,7 +418,7 @@ public class DiskStoreImpl implements DiskStore {
     this.criticalPercent = props.getDiskUsageCriticalPercentage();
 
     this.cache = cache;
-    StatisticsFactory factory = cache.getDistributedSystem();
+    StatisticsFactory factory = cache.getDistributedSystem().getStatisticsFactory();
     this.stats = new DiskStoreStats(factory, getName());
 
     // start simple init
@@ -4589,7 +4589,7 @@ public class DiskStoreImpl implements DiskStore {
   }
 
   public StatisticsFactory getStatisticsFactory() {
-    return this.cache.getDistributedSystem();
+    return this.cache.getDistributedSystem().getStatisticsFactory();
   }
 
 }

@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import org.apache.geode.StatisticDescriptor;
+import org.apache.geode.statistics.StatisticDescriptor;
 import org.apache.geode.cache.asyncqueue.internal.AsyncEventQueueStats;
 import org.apache.geode.management.internal.beans.AsyncEventQueueMBeanBridge;
 import org.apache.geode.test.junit.categories.IntegrationTest;
@@ -33,7 +33,7 @@ public class AsyncEventQueueStatsJUnitTest extends MBeanStatsTestCase {
   private AsyncEventQueueStats asyncEventQueueStats;
 
   public void init() {
-    asyncEventQueueStats = new AsyncEventQueueStats(system, "test");
+    asyncEventQueueStats = new AsyncEventQueueStats(system.getStatisticsFactory(), "test");
 
     bridge = new AsyncEventQueueMBeanBridge();
     bridge.addAsyncEventQueueStats(asyncEventQueueStats);

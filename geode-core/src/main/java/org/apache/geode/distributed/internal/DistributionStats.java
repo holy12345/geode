@@ -16,11 +16,11 @@ package org.apache.geode.distributed.internal;
 
 import org.apache.logging.log4j.Logger;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsFactory;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
+import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.internal.NanoTimer;
 import org.apache.geode.internal.logging.LogService;
 import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;

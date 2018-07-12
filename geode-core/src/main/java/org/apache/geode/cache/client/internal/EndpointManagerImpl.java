@@ -39,17 +39,18 @@ public class EndpointManagerImpl implements EndpointManager {
   private static final Logger logger = LogService.getLogger();
 
   private volatile Map<ServerLocation, Endpoint> endpointMap = Collections.emptyMap();
-  private final Map/* <ServerLocation, ConnectionStats> */<ServerLocation, ConnectionStats> statMap =
+  private final Map/* <ServerLocation, ConnectionStats> */<ServerLocation, ConnectionStats>
+      statMap =
       new HashMap<ServerLocation, ConnectionStats>();
-  private final DistributedSystem ds;
+  private final DistributedSystem distributedSystem;
   private final String poolName;
   private final EndpointListenerBroadcaster listener = new EndpointListenerBroadcaster();
   protected final CancelCriterion cancelCriterion;
   private final PoolStats poolStats;
 
   public EndpointManagerImpl(String poolName, DistributedSystem ds, CancelCriterion cancelCriterion,
-      PoolStats poolStats) {
-    this.ds = ds;
+                             PoolStats poolStats) {
+    this.distributedSystem = ds;
     this.poolName = poolName;
     this.cancelCriterion = cancelCriterion;
     this.poolStats = poolStats;
@@ -72,7 +73,7 @@ public class EndpointManagerImpl implements EndpointManager {
           ConnectionStats stats = getStats(server);
           Map<ServerLocation, Endpoint> endpointMapTemp =
               new HashMap<ServerLocation, Endpoint>(endpointMap);
-          endpoint = new Endpoint(this, ds, server, stats, memberId);
+          endpoint = new Endpoint(this, distributedSystem, server, stats, memberId);
           listener.clearPdxRegistry(endpoint);
           endpointMapTemp.put(server, endpoint);
           endpointMap = Collections.unmodifiableMap(endpointMapTemp);
@@ -106,7 +107,9 @@ public class EndpointManagerImpl implements EndpointManager {
     removeEndpoint(endpoint, false);
   }
 
-  /** Used by Endpoint only, when the reference count for this endpoint reaches 0 */
+  /**
+   * Used by Endpoint only, when the reference count for this endpoint reaches 0
+   */
   private void removeEndpoint(Endpoint endpoint, boolean crashed) {
     endpoint.close();
     boolean removedEndpoint = false;
@@ -165,7 +168,6 @@ public class EndpointManagerImpl implements EndpointManager {
   }
 
 
-
   /*
    * (non-Javadoc)
    *
@@ -181,7 +183,7 @@ public class EndpointManagerImpl implements EndpointManager {
    * @see org.apache.geode.cache.client.internal.EndpointManager#close()
    */
   public synchronized void close() {
-    for (Iterator<ConnectionStats> itr = statMap.values().iterator(); itr.hasNext();) {
+    for (Iterator<ConnectionStats> itr = statMap.values().iterator(); itr.hasNext(); ) {
       ConnectionStats stats = itr.next();
       stats.close();
     }
@@ -224,9 +226,10 @@ public class EndpointManagerImpl implements EndpointManager {
         }
       }
       if (stats == null) {
-        stats = new ConnectionStats(ds, statName, this.poolStats/*
-                                                                 * , this.gatewayStats
-                                                                 */);
+        stats =
+            new ConnectionStats(distributedSystem.getStatisticsFactory(), statName, this.poolStats/*
+             * , this.gatewayStats
+             */);
       }
       statMap.put(location, stats);
     }
@@ -268,21 +271,21 @@ public class EndpointManagerImpl implements EndpointManager {
     }
 
     public void endpointCrashed(Endpoint endpoint) {
-      for (Iterator<EndpointListener> itr = endpointListeners.iterator(); itr.hasNext();) {
+      for (Iterator<EndpointListener> itr = endpointListeners.iterator(); itr.hasNext(); ) {
         EndpointManager.EndpointListener listener = itr.next();
         listener.endpointCrashed(endpoint);
       }
     }
 
     public void endpointNoLongerInUse(Endpoint endpoint) {
-      for (Iterator<EndpointListener> itr = endpointListeners.iterator(); itr.hasNext();) {
+      for (Iterator<EndpointListener> itr = endpointListeners.iterator(); itr.hasNext(); ) {
         EndpointManager.EndpointListener listener = itr.next();
         listener.endpointNoLongerInUse(endpoint);
       }
     }
 
     public void endpointNowInUse(Endpoint endpoint) {
-      for (Iterator<EndpointListener> itr = endpointListeners.iterator(); itr.hasNext();) {
+      for (Iterator<EndpointListener> itr = endpointListeners.iterator(); itr.hasNext(); ) {
         EndpointManager.EndpointListener listener = itr.next();
         if (!(listener instanceof PdxRegistryRecoveryListener)) {
           listener.endpointNowInUse(endpoint);
@@ -291,7 +294,7 @@ public class EndpointManagerImpl implements EndpointManager {
     }
 
     public void clearPdxRegistry(Endpoint endpoint) {
-      for (Iterator<EndpointListener> itr = endpointListeners.iterator(); itr.hasNext();) {
+      for (Iterator<EndpointListener> itr = endpointListeners.iterator(); itr.hasNext(); ) {
         EndpointManager.EndpointListener listener = itr.next();
         if (listener instanceof PdxRegistryRecoveryListener) {
           listener.endpointNowInUse(endpoint);
@@ -300,7 +303,6 @@ public class EndpointManagerImpl implements EndpointManager {
     }
 
   }
-
 
 
   public class EndpointListenerForBridgeMembership implements EndpointManager.EndpointListener {

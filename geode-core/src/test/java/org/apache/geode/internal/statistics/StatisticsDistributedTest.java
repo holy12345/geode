@@ -47,11 +47,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsFactory;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
+import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.cache.Cache;
 import org.apache.geode.cache.CacheListener;
 import org.apache.geode.cache.EntryEvent;
@@ -192,7 +192,7 @@ public class StatisticsDistributedTest extends JUnit4CacheTestCase {
 
       InternalDistributedSystem system = getSystem(props);
 
-      PubSubStats statistics = new PubSubStats(system, "sub-1", 1);
+      PubSubStats statistics = new PubSubStats(system.getStatisticsFactory(), "sub-1", 1);
       subStatsRef.set(statistics);
 
       // assert that sampler is working as expected
@@ -238,7 +238,7 @@ public class StatisticsDistributedTest extends JUnit4CacheTestCase {
         final int pubThread = j;
         publishers[pubThread] = pubs[pubVM]
             .invokeAsync("pub-connect-and-put-data-" + pubVM + "-thread-" + pubThread, () -> {
-              PubSubStats statistics = new PubSubStats(basicGetSystem(), "pub-" + pubThread, pubVM);
+              PubSubStats statistics = new PubSubStats(basicGetSystem().getStatisticsFactory(), "pub-" + pubThread, pubVM);
               pubStatsRef.set(pubThread, statistics);
 
               RegionMembershipListener rml = rmlRef.get();
@@ -280,8 +280,8 @@ public class StatisticsDistributedTest extends JUnit4CacheTestCase {
               assertEquals(MAX_PUTS, statistics.getPuts());
 
               // wait for 2 samples to ensure all stats have been archived
-              StatisticsType statSamplerType = getSystem().findType("StatSampler");
-              Statistics[] statsArray = getSystem().findStatisticsByType(statSamplerType);
+              StatisticsType statSamplerType = getSystem().getInternalDistributedSystemStats().findType("StatSampler");
+              Statistics[] statsArray = getSystem().getInternalDistributedSystemStats().findStatisticsByType(statSamplerType);
               assertEquals(1, statsArray.length);
 
               Statistics statSamplerStats = statsArray[0];
@@ -302,8 +302,8 @@ public class StatisticsDistributedTest extends JUnit4CacheTestCase {
 
     sub.invoke("sub-wait-for-samples", () -> {
       // wait for 2 samples to ensure all stats have been archived
-      StatisticsType statSamplerType = getSystem().findType("StatSampler");
-      Statistics[] statsArray = getSystem().findStatisticsByType(statSamplerType);
+      StatisticsType statSamplerType = getSystem().getInternalDistributedSystemStats().findType("StatSampler");
+      Statistics[] statsArray = getSystem().getInternalDistributedSystemStats().findStatisticsByType(statSamplerType);
       assertEquals(1, statsArray.length);
 
       Statistics statSamplerStats = statsArray[0];

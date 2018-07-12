@@ -20,7 +20,7 @@ import static org.apache.geode.internal.cache.tier.CommunicationMode.ProtobufCli
 import java.io.IOException;
 import java.net.Socket;
 
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.internal.cache.InternalCache;
 import org.apache.geode.internal.cache.client.protocol.ClientProtocolProcessor;
 import org.apache.geode.internal.cache.client.protocol.ClientProtocolService;
@@ -80,7 +80,7 @@ public class ServerConnectionFactory {
       String communicationModeStr, byte communicationMode, Acceptor acceptor,
       SecurityService securityService) throws IOException {
     ClientProtocolService service =
-        getClientProtocolService(cache.getDistributedSystem(), acceptor.getServerName());
+        getClientProtocolService(cache.getDistributedSystem().getStatisticsFactory(), acceptor.getServerName());
 
     ClientProtocolProcessor processor = service.createProcessorForCache(cache, securityService);
 

@@ -20,7 +20,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
 
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.cache.query.CqClosedException;
 import org.apache.geode.cache.query.CqEvent;
 import org.apache.geode.cache.query.CqException;
@@ -123,7 +123,7 @@ public abstract class CqQueryImpl implements InternalCqQuery {
 
   void updateCqCreateStats() {
     // Initialize the VSD statistics
-    StatisticsFactory factory = cqService.getCache().getDistributedSystem();
+    StatisticsFactory factory = cqService.getCache().getDistributedSystem().getStatisticsFactory();
     this.stats = new CqQueryVsdStats(factory, getServerCqName());
     this.cqStats = new CqStatisticsImpl(this);
 

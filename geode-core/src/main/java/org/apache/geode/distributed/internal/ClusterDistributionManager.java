@@ -666,7 +666,7 @@ public class ClusterDistributionManager implements DistributionManager {
        * deadcoded since we don't know the channel id yet. if (statId == 0 || statId == -1) { statId
        * = getMembershipPort(); }
        */
-      this.stats = new DistributionStats(system, statId);
+      this.stats = new DistributionStats(system.getStatisticsFactory(), statId);
       DistributionStats.enableClockStats = system.getConfig().getEnableTimeStatistics();
     }
 
